@@ -28,6 +28,7 @@ function DrawerContentScrollView(
     <ScrollView
       {...rest}
       ref={ref}
+      nativeID="hansel_ignore_container"
       contentContainerStyle={[
         {
           paddingTop: insets.top + 4,
