@@ -19,6 +19,7 @@ export default function DrawerContentScrollView({
   return (
     <ScrollView
       {...rest}
+      nativeID="hansel_ignore_container"
       contentContainerStyle={[
         {
           paddingTop: insets.top + 4,
