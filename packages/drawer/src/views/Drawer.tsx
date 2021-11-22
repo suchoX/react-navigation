@@ -596,109 +596,111 @@ export default class DrawerView extends React.Component<Props> {
     const progress = drawerType === 'permanent' ? ANIMATED_ONE : this.progress;
 
     return (
-      <PanGestureHandler
-        activeOffsetX={[-SWIPE_DISTANCE_MINIMUM, SWIPE_DISTANCE_MINIMUM]}
-        failOffsetY={[-SWIPE_DISTANCE_MINIMUM, SWIPE_DISTANCE_MINIMUM]}
-        onGestureEvent={this.handleGestureEvent}
-        onHandlerStateChange={this.handleGestureStateChange}
-        hitSlop={hitSlop}
-        enabled={drawerType !== 'permanent' && gestureEnabled && swipeEnabled}
-        {...gestureHandlerProps}
-      >
-        <Animated.View
-          onLayout={this.handleContainerLayout}
-          style={[
-            styles.main,
-            {
-              flexDirection:
-                drawerType === 'permanent' && !isRight ? 'row-reverse' : 'row',
-            },
-          ]}
+      <View nativeID="hansel_ignore_container">
+        <PanGestureHandler
+          activeOffsetX={[-SWIPE_DISTANCE_MINIMUM, SWIPE_DISTANCE_MINIMUM]}
+          failOffsetY={[-SWIPE_DISTANCE_MINIMUM, SWIPE_DISTANCE_MINIMUM]}
+          onGestureEvent={this.handleGestureEvent}
+          onHandlerStateChange={this.handleGestureStateChange}
+          hitSlop={hitSlop}
+          enabled={drawerType !== 'permanent' && gestureEnabled && swipeEnabled}
+          {...gestureHandlerProps}
         >
           <Animated.View
+            onLayout={this.handleContainerLayout}
             style={[
-              styles.content,
-              { transform: [{ translateX: contentTranslateX }] },
-              sceneContainerStyle as any,
-            ]}
-          >
-            <View
-              accessibilityElementsHidden={isOpen && drawerType !== 'permanent'}
-              importantForAccessibility={
-                isOpen && drawerType !== 'permanent'
-                  ? 'no-hide-descendants'
-                  : 'auto'
-              }
-              style={styles.content}
-            >
-              {renderSceneContent({ progress })}
-            </View>
-            {
-              // Disable overlay if sidebar is permanent
-              drawerType === 'permanent' ? null : Platform.OS === 'web' ||
-                Platform.OS === 'windows' ||
-                Platform.OS === 'macos' ? (
-                <TouchableWithoutFeedback
-                  onPress={
-                    gestureEnabled ? () => this.toggleDrawer(false) : undefined
-                  }
-                >
-                  <Overlay progress={progress} style={overlayStyle as any} />
-                </TouchableWithoutFeedback>
-              ) : (
-                <TapGestureHandler
-                  enabled={gestureEnabled}
-                  onHandlerStateChange={this.handleTapStateChange}
-                >
-                  <Overlay progress={progress} style={overlayStyle as any} />
-                </TapGestureHandler>
-              )
-            }
-          </Animated.View>
-          <Animated.Code
-            // This is needed to make sure that container width updates with `setValue`
-            // Without this, it won't update when not used in styles
-            exec={this.containerWidth}
-          />
-          {drawerType === 'permanent' ? null : (
-            <Animated.Code
-              exec={block([
-                onChange(this.manuallyTriggerSpring, [
-                  cond(eq(this.manuallyTriggerSpring, TRUE), [
-                    set(this.nextIsOpen, FALSE),
-                    call([], () => (this.currentOpenValue = false)),
-                  ]),
-                ]),
-              ])}
-            />
-          )}
-          <Animated.View
-            accessibilityViewIsModal={isOpen && drawerType !== 'permanent'}
-            removeClippedSubviews={Platform.OS !== 'ios'}
-            onLayout={this.handleDrawerLayout}
-            style={[
-              styles.container,
+              styles.main,
               {
-                transform: [{ translateX: drawerTranslateX }],
-                opacity: this.drawerOpacity,
+                flexDirection:
+                  drawerType === 'permanent' && !isRight ? 'row-reverse' : 'row',
               },
-              drawerType === 'permanent'
-                ? // Without this, the `left`/`right` values don't get reset
-                  isRight
-                  ? { right: 0 }
-                  : { left: 0 }
-                : [
-                    styles.nonPermanent,
-                    isRight ? { right: offset } : { left: offset },
-                    { zIndex: drawerType === 'back' ? -1 : 0 },
-                  ],
-              drawerStyle as any,
             ]}
           >
-            {renderDrawerContent({ progress })}
+            <Animated.View
+              style={[
+                styles.content,
+                { transform: [{ translateX: contentTranslateX }] },
+                sceneContainerStyle as any,
+              ]}
+            >
+              <View
+                accessibilityElementsHidden={isOpen && drawerType !== 'permanent'}
+                importantForAccessibility={
+                  isOpen && drawerType !== 'permanent'
+                    ? 'no-hide-descendants'
+                    : 'auto'
+                }
+                style={styles.content}
+              >
+                {renderSceneContent({ progress })}
+              </View>
+              {
+                // Disable overlay if sidebar is permanent
+                drawerType === 'permanent' ? null : Platform.OS === 'web' ||
+                  Platform.OS === 'windows' ||
+                  Platform.OS === 'macos' ? (
+                  <TouchableWithoutFeedback
+                    onPress={
+                      gestureEnabled ? () => this.toggleDrawer(false) : undefined
+                    }
+                  >
+                    <Overlay progress={progress} style={overlayStyle as any} />
+                  </TouchableWithoutFeedback>
+                ) : (
+                  <TapGestureHandler
+                    enabled={gestureEnabled}
+                    onHandlerStateChange={this.handleTapStateChange}
+                  >
+                    <Overlay progress={progress} style={overlayStyle as any} />
+                  </TapGestureHandler>
+                )
+              }
+            </Animated.View>
+            <Animated.Code
+              // This is needed to make sure that container width updates with `setValue`
+              // Without this, it won't update when not used in styles
+              exec={this.containerWidth}
+            />
+            {drawerType === 'permanent' ? null : (
+              <Animated.Code
+                exec={block([
+                  onChange(this.manuallyTriggerSpring, [
+                    cond(eq(this.manuallyTriggerSpring, TRUE), [
+                      set(this.nextIsOpen, FALSE),
+                      call([], () => (this.currentOpenValue = false)),
+                    ]),
+                  ]),
+                ])}
+              />
+            )}
+            <Animated.View
+              accessibilityViewIsModal={isOpen && drawerType !== 'permanent'}
+              removeClippedSubviews={Platform.OS !== 'ios'}
+              onLayout={this.handleDrawerLayout}
+              style={[
+                styles.container,
+                {
+                  transform: [{ translateX: drawerTranslateX }],
+                  opacity: this.drawerOpacity,
+                },
+                drawerType === 'permanent'
+                  ? // Without this, the `left`/`right` values don't get reset
+                    isRight
+                    ? { right: 0 }
+                    : { left: 0 }
+                  : [
+                      styles.nonPermanent,
+                      isRight ? { right: offset } : { left: offset },
+                      { zIndex: drawerType === 'back' ? -1 : 0 },
+                    ],
+                drawerStyle as any,
+              ]}
+            >
+              {renderDrawerContent({ progress })}
+            </Animated.View>
           </Animated.View>
-        </Animated.View>
-      </PanGestureHandler>
+        </PanGestureHandler>
+      </View>
     );
   }
 }

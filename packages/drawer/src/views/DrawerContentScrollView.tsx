@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { ScrollView, StyleSheet, ScrollViewProps, View } from 'react-native';
+import { ScrollView, StyleSheet, ScrollViewProps } from 'react-native';
 import { useSafeArea } from 'react-native-safe-area-context';
 import DrawerPositionContext from '../utils/DrawerPositionContext';
 
@@ -17,22 +17,20 @@ export default function DrawerContentScrollView({
   const insets = useSafeArea();
 
   return (
-    <View nativeID="hansel_ignore_container">
-      <ScrollView
-        {...rest}
-        contentContainerStyle={[
-          {
-            paddingTop: insets.top + 4,
-            paddingLeft: drawerPosition === 'left' ? insets.left : 0,
-            paddingRight: drawerPosition === 'right' ? insets.right : 0,
-          },
-          contentContainerStyle,
-        ]}
-        style={[styles.container, style]}
-      >
-        {children}
-      </ScrollView>
-    </View>
+    <ScrollView
+      {...rest}
+      contentContainerStyle={[
+        {
+          paddingTop: insets.top + 4,
+          paddingLeft: drawerPosition === 'left' ? insets.left : 0,
+          paddingRight: drawerPosition === 'right' ? insets.right : 0,
+        },
+        contentContainerStyle,
+      ]}
+      style={[styles.container, style]}
+    >
+      {children}
+    </ScrollView>
   );
 }
 
